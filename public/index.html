@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UNH Schedule Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:#f3f5f9;--sf:#fff;--tx:#17202e;--mu:#5b6880;--bd:#dce2ec;--ac:#0a3b8c;--ac2:#e5ecfa;--ok:#127a46;--bad:#b3261e}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1420;--sf:#161e2e;--tx:#e8ecf4;--mu:#9aa6bd;--bd:#27324a;--ac:#8db0ff;--ac2:#1c2b4b;--ok:#4cd08a;--bad:#ff8f86}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 "Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+select,input{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:7px 9px;max-width:100%}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 28px;background:var(--sf);border-bottom:1px solid var(--bd)}
+.brand{font-weight:800;font-size:19px;letter-spacing:-.01em;color:var(--ac)}.hd{display:flex;gap:10px;align-items:center;color:var(--mu);font-size:13px}
+main{display:grid;grid-template-columns:400px 1fr;gap:24px;padding:24px 28px;max-width:1500px;margin:auto;align-items:start}
+aside{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}
+.step{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:14px}
+.step h2{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:17px;font-weight:700}
+.step h2 i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ac);color:var(--sf);font-size:13px;font-weight:700;font-style:normal}
+.opt{margin-left:auto;font-size:12px;font-weight:500;color:var(--mu)}
+.srch input{width:100%;padding:12px 14px;font-size:16px;border:1.5px solid var(--bd);border-radius:10px}
+.srch input:focus{border-color:var(--ac);outline:none;box-shadow:0 0 0 3px var(--ac2)}
+.hit{display:flex;gap:8px;align-items:baseline;width:100%;text-align:left;padding:9px 10px;margin-top:4px;background:var(--bg);border:1px solid transparent;border-radius:8px}
+.hit:hover{border-color:var(--ac)}.hit span{flex:1;min-width:0}.hit em{font-style:normal;color:var(--mu);font-size:12px}
+.lab{margin:16px 0 8px;font-size:13px;font-weight:600;color:var(--mu)}.hint{color:var(--mu);margin:14px 0 0;font-size:14px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{padding:6px 12px;border:1px solid var(--bd);border-radius:99px;background:var(--sf);font-size:13px}
+.tag:hover{border-color:var(--ac)}.tag.on{background:var(--ac);border-color:var(--ac);color:var(--sf)}
+.chip{padding:4px 9px;border:1px solid var(--bd);border-radius:8px;background:var(--sf);font-size:12px;text-align:left}
+.chip.off{opacity:.45;text-decoration:line-through}.scroll{max-height:130px;overflow:auto}
+.req{position:relative;margin-top:10px;padding:11px 12px 11px 16px;background:var(--bg);border:1px solid var(--bd);border-radius:10px}
+.req::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:4px;border-radius:0 4px 4px 0;background:var(--c)}
+.rh{display:flex;gap:8px;justify-content:space-between;align-items:flex-start}
+.req small{display:block;color:var(--mu);font-size:12px;margin-top:2px}
+.x{border:0;background:none;font-size:20px;line-height:1;color:var(--mu);padding:0 4px}.x:hover{color:var(--bad)}
+details>summary{cursor:pointer;color:var(--ac);font-size:13px;font-weight:600;margin-top:8px;list-style:none}
+details>summary::-webkit-details-marker{display:none}details>summary::before{content:"▸ "}details[open]>summary::before{content:"▾ "}
+details .tags,details .two{margin-top:8px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.two label{display:grid;gap:4px;font-size:13px;color:var(--mu)}.two select,.two input{width:100%;color:var(--tx)}
+.brk{display:flex;justify-content:space-between;align-items:center;margin:6px 0;font-size:13px}
+.chk{display:inline-flex;align-items:center;gap:6px;font-size:13px;margin:8px 12px 0 0}
+.btn,button.s{padding:8px 14px;border:1px solid var(--bd);border-radius:8px;background:var(--sf);font-weight:600;font-size:13px}.btn:hover,button.s:hover{border-color:var(--ac)}
+.btn.p,button.s.p{background:var(--ac);border-color:var(--ac);color:var(--sf)}
+.bar{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;margin-bottom:16px}
+.seg{display:flex;flex-wrap:wrap;background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:6px 12px;border-radius:7px;font-size:13px;font-weight:600;color:var(--mu)}.seg button.on{background:var(--ac);color:var(--sf)}
+.cnt{margin:0 0 2px;font-size:24px;font-weight:800;letter-spacing:-.015em}.sub{margin:0 0 16px;color:var(--mu)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:16px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:16px}
+.ch{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:2px}.badge{font-size:12px;font-weight:700;color:var(--ok);margin-left:6px}
+.sum,.mu{color:var(--mu);font-size:13px}.card .sum{margin-bottom:10px}
+.cl{list-style:none;margin:14px 0;padding:0;display:grid;gap:10px}.cl li{display:flex;gap:9px}.cl i{flex:none;width:4px;border-radius:3px;background:var(--c)}.cl small{display:block;color:var(--mu);font-size:12px}
+.cf{display:flex;gap:8px;flex-wrap:wrap}
+.empty{background:var(--sf);border:1px dashed var(--bd);border-radius:14px;padding:48px 28px;text-align:center;color:var(--mu)}
+.empty h2{margin:0 0 6px;color:var(--tx);font-size:20px}.empty.err h2{color:var(--bad)}
+.cal{display:grid;grid-template-columns:34px repeat(5,1fr);font-size:10px}.cal .h{text-align:center;color:var(--mu);padding:2px 0;font-weight:600}
+.cal .col{position:relative;border-left:1px solid var(--bd)}.cal .tl{position:relative}.cal .tl span{position:absolute;right:4px;transform:translateY(-50%);color:var(--mu)}
+.hl{position:absolute;left:0;right:0;border-top:1px solid var(--bd);opacity:.6}
+.blk{position:absolute;left:1px;right:1px;border-radius:4px;color:#fff;padding:2px 3px;overflow:hidden;line-height:1.15}
+dialog{max-width:620px;width:92%;background:var(--sf);color:var(--tx);border:1px solid var(--bd);border-radius:14px}
+textarea{width:100%;min-height:110px;font:12px ui-monospace,monospace;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
+@media(max-width:980px){main{grid-template-columns:1fr;padding:16px}aside{position:static;max-height:none}.grid{grid-template-columns:1fr}.top{padding:12px 16px}}
+
+.top{position:sticky;top:0;z-index:5;box-shadow:0 1px 0 var(--bd)}aside{top:76px;max-height:calc(100vh - 92px)}
+.step{box-shadow:0 1px 2px rgba(10,30,70,.05)}.card{transition:box-shadow .15s,border-color .15s}.card:hover{border-color:var(--ac);box-shadow:0 6px 18px rgba(10,30,70,.10)}
+.hit.act{border-color:var(--ac);background:var(--ac2)}.hit i{width:10px;height:10px;border-radius:3px;background:var(--c);flex:none;align-self:center}.hit mark{background:none;color:var(--ac);font-weight:800}
+.sum2{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;font-size:13px;font-weight:600}.pill2{padding:3px 10px;border-radius:99px;background:var(--ac2);color:var(--ac)}.pill2.warn{background:#fdecea;color:var(--bad)}
+@media(prefers-color-scheme:dark){.pill2.warn{background:#3a1a18}}
+.lo{color:var(--bad);font-weight:700}.ex{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.jump{display:none;position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:6;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+@media(max-width:980px){.jump{display:block}aside{top:auto;max-height:none}}
+
+@media(min-width:981px){main{max-width:none;margin:0;grid-template-columns:clamp(380px,22vw,460px) minmax(0,1fr);gap:28px;padding:24px 32px}.grid{grid-template-columns:repeat(auto-fill,minmax(540px,1fr));gap:20px}}
+.card{padding:20px}.card .ch b{font-size:17px}.card .sum{font-size:14px}
+.cal{grid-template-columns:42px repeat(5,1fr);font-size:12px}.cal .h{font-size:13px;padding:4px 0}.cal .tl span{font-size:11.5px;right:6px}
+.cal .col{border-left:1px solid var(--bd)}.cal .col:nth-child(even){background:rgba(127,140,170,.06)}.hl{opacity:.9}
+.blk{display:flex;flex-direction:column;gap:1px;padding:3px 6px;border-left:3px solid rgba(255,255,255,.6);border-radius:6px;line-height:1.2;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.blk b{font-size:12.5px;font-weight:700;white-space:nowrap}.blk span{font-size:11.5px;white-space:nowrap}
+.blk em{font-style:normal;font-size:11px;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blk.lab{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.16) 0 6px,transparent 6px 12px)}
+.cl b{font-size:15px}.cl small{font-size:13px}.cl i{width:5px}
+
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:20;background:var(--tx);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;font-weight:600;transition:.2s;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+#toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}#toast button{margin-left:10px;border:0;background:none;color:inherit;text-decoration:underline;font-weight:800}
+.card.top1{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok)}
+.why{margin:12px 0 0;padding-left:18px;text-align:left;display:inline-block;color:var(--tx);font-size:14px}
+@media print{.top,aside,.bar,.jump,.cf,#toast{display:none!important}main{display:block!important;padding:0!important}.grid{display:block!important}.card{break-inside:avoid;margin-bottom:16px}}
+
+a.blk{text-decoration:none;color:#fff;cursor:pointer}a.blk:hover{filter:brightness(1.15);outline:2px solid #fff;z-index:2}
+.cl a.ext{color:inherit;text-decoration:none}.cl a.ext:hover{color:var(--ac);text-decoration:underline}
+</style></head><body>
+<header class="top"><div class="brand">UNH Schedule Studio</div><div class="hd"><span id="pill">Sample classes</span><select id="term" onchange="setTerm(this.value)" style="display:none" aria-label="Term"></select></div></header>
+<main>
+<aside>
+<section class="step"><h2><i>1</i>Add your classes</h2>
+<div class="srch"><input id="q" placeholder="Search a class, like ECE 548 or calculus (press / )" oninput="hi=0;found()" onkeydown="qk(event)" autocomplete="off" aria-label="Search classes"><div id="found"></div></div>
+<p class="lab">Need a Discovery credit? Pick a topic and we’ll find the best fit.</p><div id="disc" class="tags"></div>
+<div id="reqs"></div><div id="sumry"></div></section>
+<section class="step"><h2><i>2</i>Set your limits <span class="opt">optional</span></h2>
+<p class="lab" style="margin-top:0">Quick filters</p><div id="qol" class="tags"></div><p class="lab">Keep these days free (work, rest)</p><div id="fd" class="tags"></div>
+<div class="two" style="margin-top:14px"><label>Start no earlier than<select id="aft" onchange="pref()"></select></label><label>Finish by<select id="bef" onchange="pref()"></select></label></div>
+<details><summary>Block off work hours or other times</summary>
+<div id="brks"></div><div class="two"><label>Name<input id="bn" placeholder="Job"></label><span></span><label>From<input id="bs" type="time" value="12:00"></label><label>To<input id="be" type="time" value="13:00"></label></div>
+<div id="bd"></div><p style="margin:10px 0 0"><button class="btn" onclick="addBrk()">Block this time</button></p></details>
+<label class="chk"><input type="checkbox" id="uman" onchange="pref()"> Include Manchester campus classes</label><label class="chk"><input type="checkbox" id="uopen" onchange="pref()"> Hide full sections</label></section>
+</aside>
+<section><div id="bar" class="bar"></div><div id="res"></div></section></main>
+<button class="btn p jump" onclick="$('#bar').scrollIntoView({behavior:'smooth'})">See schedules ↓</button>
+<div id="toast" role="status" aria-live="polite"></div>
+<dialog id="dlg"></dialog>
+<script src="pdf-lib.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),DAYS="MTWRF",DN=["Mon","Tue","Wed","Thu","Fri"];
+const TAG={BS:"Biological Science",DLAB:"Discovery Lab",ETS:"Environment, Tech & Society",FPA:"Fine & Performing Arts",HP:"Historical Perspective",HUMA:"Humanities",INQ:"Inquiry",PS:"Physical Science",QR:"Quantitative Reasoning",SS:"Social Science",WC:"World Cultures",WI:"Writing Intensive",WRIT:"Writing Intensive"};
+const RAW=[
+{c:"ENGL 401",t:"First-Year Writing",cr:4,d:["WI"],s:[["10101","01","Alvarez","MWF 09:10-10:00;T 09:40-11:00",6],["10102","02","Brooks","TR 11:10-12:30",3],["10103","03","Chen","MWF 13:10-14:00;R 13:10-14:30",12]]},
+{c:"MATH 425",t:"Calculus I",cr:4,d:["QR"],s:[["10201","01","Dube","MTWF 08:10-09:00",4],["10202","02","Evans","MTWF 10:10-11:00",9],["10203","03","Frost","MTWF 12:10-13:00",15]]},
+{c:"MATH 426",t:"Calculus II",cr:4,d:["QR"],s:[["10251","01","Grant","MTWF 09:10-10:00",7],["10252","02","Hale","MTWF 14:10-15:00",11]]},
+{c:"CS 415",t:"Introduction to Computer Science I",cr:4,d:["QR"],s:[["10301","01","Ito","TR 09:40-11:00;F 09:10-11:00",10],["10302","02","Jones","TR 14:10-15:30;F 12:10-14:00",2],["10303","03","Kim","MW 15:40-17:00;F 14:10-16:00",18]]},
+{c:"CS 416",t:"Introduction to Computer Science II",cr:4,d:["QR"],s:[["10351","01","Lopez","TR 11:10-12:30;W 14:10-16:00",8]]},
+{c:"PHYS 407",t:"General Physics I",cr:4,d:["PS","DLAB"],s:[["10401","01","Moore","MWF 10:10-11:00;T 14:10-17:00",5],["10402","02","Nash","MWF 11:10-12:00;R 14:10-17:00",14]]},
+{c:"CHEM 403",t:"General Chemistry I",cr:4,d:["PS","DLAB"],s:[["10501","01","Ortiz","MWF 08:10-09:00;T 13:40-16:30",3],["10502","02","Park","TR 09:40-11:00;W 13:10-16:00",16]]},
+{c:"BIOL 411",t:"Principles of Biology I",cr:4,d:["BS","DLAB"],s:[["10601","01","Quinn","MWF 11:10-12:00;R 09:10-12:00",12],["10602","02","Reed","TR 14:10-15:30;W 09:10-12:00",1]]},
+{c:"PSYC 401",t:"Introduction to Psychology",cr:4,d:["SS"],s:[["10701","01","Shaw","TR 12:40-14:00",30],["10702","02","Tran","MWF 14:10-15:00",25]]},
+{c:"SOC 400",t:"Introduction to Sociology",cr:4,d:["SS","WC"],s:[["10751","01","Usher","TR 15:40-17:00",10]]},
+{c:"ECON 402",t:"Principles of Macroeconomics",cr:4,d:["SS","QR"],s:[["10801","01","Vega","MWF 09:10-10:00",21],["10802","02","Wu","TR 08:10-09:30",9]]},
+{c:"HIST 405",t:"U.S. History to 1865",cr:4,d:["HP","WI"],s:[["10901","01","Xu","MWF 12:10-13:00",13],["10902","02","Young","TR 09:40-11:00",7]]},
+{c:"PHIL 401",t:"Introduction to Philosophy",cr:4,d:["HUMA","INQ"],s:[["11001","01","Zhao","TR 14:10-15:30",17],["11002","02","Abbott","MWF 15:10-16:00",20]]},
+{c:"COMM 425",t:"Public Speaking",cr:4,d:["HUMA"],s:[["11101","01","Bell","MW 17:10-18:30",6],["11102","02","Cole","TR 08:10-09:30",3]]},
+{c:"ARTS 405",t:"Drawing I",cr:4,d:["FPA"],s:[["11201","01","Diaz","F 09:10-12:00;W 13:10-15:00",8]]},
+{c:"ENVS 400",t:"Environmental Science",cr:4,d:["ETS","BS"],s:[["11301","01","Ellis","MWF 13:10-14:00",22]]}];
+const TOP=["HP","HUMA","FPA","SS","WC","PS","BS","PS&DLAB","BS&DLAB","ETS","QR","INQ","WRIT"];
+const FR={HP:"History",HUMA:"Humanities",FPA:"Arts",SS:"Social science",WC:"World cultures",PS:"Physical science",BS:"Biology","PS&DLAB":"Physical science + lab","BS&DLAB":"Biology + lab",ETS:"Environment, tech & society",QR:"Quantitative reasoning",INQ:"Inquiry",WRIT:"Writing intensive"};
+const tl=v=>FR[v]||v.split("&").map(x=>TAG[x]||x).join(" + ");
+const SORTS={gaps:"Most back-to-back",days:"Fewest days",late:"Latest start",early:"Earliest finish"};
+let ATTR={},CAT=[],st,view="sch",RES=[],showN=12;
+const tm=s=>{const[a,b]=s.split(":");return+a*60+ +b};
+const fm=m=>{const h=Math.floor(m/60),x=m%60;return(h%12||12)+(x?":"+String(x).padStart(2,"0"):"")+(h<12?"a":"p")};
+const ab=t=>/comb/i.test(t)?"Lec/Lab":/lec/i.test(t)?"Lec":/lab/i.test(t)?"Lab":/rec/i.test(t)?"Rec":/dis/i.test(t)?"Dis":/sem/i.test(t)?"Sem":(t||"").slice(0,4);
+const tt=t=>(t||"").replace(/(\d\d):(\d\d)/g,(x,h,m)=>fm(+h*60+ +m)).replace(/;/g,", ");
+const pieces=s=>s.parts.flatMap(p=>p.mt&&p.mt.length?p.mt.map(q=>[ab(q.y||p.ty),q.t]):[[ab(p.ty),p.t]]);
+const sumT=s=>{if(!s.parts)return tt(s.t);const a=pieces(s);return a.length>1?a.map(x=>x[0]+" "+tt(x[1])).join("  +  "):tt(a[0]?a[0][1]:"")};
+const lbl=(c,m)=>c+(m.ty&&m.ty!="Lec"?" "+m.ty:"");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function parse(t){if(!t)return[];return t.split(";").flatMap(p=>{const[d,r]=p.trim().split(" "),[s,e]=r.split("-");return[...d].map(x=>({d:DAYS.indexOf(x),s:tm(s),e:tm(e)}))})}
+const PRI=t=>/lec|comb|sem/i.test(t||"")&&!/^lab/i.test(t||"");
+function pair(S){const L=S.filter(s=>s.parts&&s.parts.length==1&&s.parts[0].lk);if(L.length<2)return S;
+const P=L.filter(s=>PRI(s.parts[0].ty)),Q=L.filter(s=>!PRI(s.parts[0].ty));if(!P.length||!Q.length)return S;
+const out=S.filter(s=>!L.includes(s));
+for(const p of P){const k=p.parts[0].lk;let c=Q.filter(q=>q.parts[0].lk[0]!=k[0]);const e=c.filter(q=>q.parts[0].lk.slice(1)==k.slice(1));if(e.length)c=e;
+if(!c.length){out.push(p);continue}
+for(const q of c)out.push({crn:p.crn+"+"+q.crn,sec:p.sec+"/"+q.sec,inst:[...new Set((p.inst+", "+q.inst).split(", "))].filter(Boolean).join(", "),seats:Math.min(p.seats,q.seats),t:[p.t,q.t].filter(Boolean).join(";"),parts:[...p.parts,...q.parts]})}
+return out}
+const dec=t=>String(t||"").replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&");
+function norm(a){return a.map(c=>({c:c.c,t:dec(c.t),cr:c.cr||4,d:c.d||[],s:pair(c.s.map(x=>Array.isArray(x)?{crn:x[0],sec:x[1],inst:x[2],t:x[3],seats:x[4]}:x)).map(x=>({...x,m:x.parts?pieces(x).flatMap(([ty,t])=>parse(t).map(m=>({...m,ty}))):parse(x.t)}))}))}
+function load(){CAT=norm(RAW);st={reqs:[],breaks:[],f:{no8:0,noFri:0,aft:"",bef:"",open:1},sort:"gaps",saved:[],theme:""};
+try{const j=JSON.parse(localStorage.getItem("unhss")||"null");if(j)st={...st,...j}}catch(e){}}
+function save(){try{localStorage.setItem("unhss",JSON.stringify(st))}catch(e){}}
+const hue=c=>{let h=0;for(const x of c)h=(h*31+x.charCodeAt(0))%360;return h};
+const col=c=>`hsl(${hue(c)} 55% 42%)`;
+let hi=0,HITS=[];
+const rx=s=>s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+function found(){const q=$("#q").value.toLowerCase().trim();if(!q){HITS=[];hi=0;$("#found").innerHTML="";return}
+const k=q.replace(/\s/g,""),rk=c=>c.c.toLowerCase().replace(/\s/g,"").startsWith(k)?0:c.t.toLowerCase().startsWith(q)?1:2;
+HITS=CAT.filter(c=>!bad(c)&&!st.reqs.some(r=>r.k=="c"&&r.v==c.c)&&(c.c+" "+c.t+" "+c.s.map(s=>s.inst).join(" ")).toLowerCase().includes(q)).sort((a,b)=>rk(a)-rk(b)).slice(0,8);
+hi=Math.min(hi,Math.max(HITS.length-1,0));const m=t=>esc(t).replace(new RegExp("("+rx(esc(q))+")","ig"),"<mark>$1</mark>");
+$("#found").innerHTML=HITS.map((c,i)=>`<button class="hit ${i==hi?"act":""}" style="--c:${col(c.c)}" onclick="addC('${c.c}')"><i></i><b>${m(c.c)}</b><span>${m(c.t)}</span><em>${c.cr} cr · ${c.s.length} sec</em></button>`).join("")||'<p class="hint">No classes match. Try the course code, like ECE 548.</p>'}
+function qk(e){if(!HITS.length)return;if(e.key=="ArrowDown"||e.key=="ArrowUp"){e.preventDefault();hi=(hi+(e.key=="ArrowDown"?1:HITS.length-1))%HITS.length;found()}
+else if(e.key=="Enter"){e.preventDefault();addC(HITS[hi].c)}else if(e.key=="Escape"){$("#q").value="";found()}}
+function renderSum(){const n=st.reqs.length,cr=st.reqs.reduce((a,r)=>a+(r.k=="c"?(CAT.find(c=>c.c==r.v)||{cr:0}).cr:4),0);
+$("#sumry").innerHTML=n?`<div class="sum2"><span class="pill2">${n} class${n==1?"":"es"}</span><span class="pill2 ${cr<12||cr>18?"warn":""}">${st.reqs.some(r=>r.k=="d")?"~":""}${cr} credits</span>${cr<12?'<span class="mu">under 12</span>':cr>18?'<span class="mu">over 18</span>':""}<button class="btn" style="margin-left:auto" onclick="clr()">Clear all</button></div>`:""}
+function addC(c){if(!st.reqs.some(r=>r.k=="c"&&r.v==c))st.reqs.push({k:"c",v:c,off:[]});$("#q").value="";go();$("#q").focus()}
+function togDisc(t){const j=st.reqs.findIndex(r=>r.k=="d"&&r.v==t);j<0?st.reqs.push({k:"d",v:t,off:[]}):st.reqs.splice(j,1);go()}
+function rDay(i,d){const f=st.reqs[i].f=st.reqs[i].f||{};const D=f.days||"";f.days=[...DAYS].filter(x=>D.includes(x)!=(x==d)).join("");go()}
+function rT(i,k,v){const f=st.reqs[i].f=st.reqs[i].f||{};f[k]=v;if(k=="from"&&v&&!f.to)f.to=v;go()}
+const hh=v=>String(Math.floor(v/60)).padStart(2,"0")+":"+String(v%60).padStart(2,"0");
+const tlab=v=>{const h=Math.floor(v/60);return(h%12||12)+":"+String(v%60).padStart(2,"0")+(h<12?" AM":" PM")};
+function opts(a,sel,any){return`<option value="">${any}</option>`+(sel&&!a.map(hh).includes(sel)?`<option value="${sel}" selected>${tlab(tm(sel))}</option>`:"")+a.map(v=>`<option value="${hh(v)}" ${hh(v)==sel?"selected":""}>${tlab(v)}</option>`).join("")}
+function times(k,all){const o=new Set();CAT.forEach(c=>{if(!bad(c))c.s.forEach(x=>x.m.forEach(m=>{if(all||!m.ty||/^(Lec|Sem)/.test(m.ty))o.add(m[k])}))});return[...o].filter(v=>v>=420&&v<=1290).sort((a,b)=>a-b)}
+const starts=all=>times("s",all);
+function fillPrefs(){$("#aft").innerHTML=opts(starts(true),st.f.aft,"No limit");$("#bef").innerHTML=opts(times("e",true),st.f.bef,"No limit");$("#fd").innerHTML=DN.map((d,i)=>`<button class="tag ${(st.f.free||[]).includes(i)?"on":""}" onclick="togFree(${i})">${d}</button>`).join("")}
+function togFree(i){const a=st.f.free=st.f.free||[],j=a.indexOf(i);j<0?a.push(i):a.splice(j,1);go()}
+function togC(i,c){const o=st.reqs[i].xc=st.reqs[i].xc||[],j=o.indexOf(c);j<0?o.push(c):o.splice(j,1);go()}
+function rmReq(i){const r=st.reqs.splice(i,1)[0];go();toast("Removed "+(r.k=="c"?r.v:"a Discovery topic"),()=>{st.reqs.splice(i,0,r);go()})}
+function togSec(i,crn){const o=st.reqs[i].off,j=o.indexOf(crn);j<0?o.push(crn):o.splice(j,1);go()}
+function pref(){st.f.aft=$("#aft").value;st.f.bef=$("#bef").value;st.f.uman=$("#uman").checked;st.f.open=$("#uopen").checked;go()}
+function addBrk(){const d=[...document.querySelectorAll("#bd input:checked")].map(x=>+x.value);if(!d.length){alert("Pick at least one day to block.");return}
+st.breaks.push({n:$("#bn").value||"Break",d,s:tm($("#bs").value),e:tm($("#be").value)});$("#bn").value="";go()}
+function rmBrk(i){st.breaks.splice(i,1);go()}
+const okSec=s=>{const f=st.f;return !(f.open&&s.seats<=0)&&s.m.every(m=>!(f.no8&&m.s<540)&&!(f.noFri&&m.d==4)&&!(f.free||[]).includes(m.d)&&!(f.aft&&m.s<tm(f.aft))&&!(f.bef&&m.e>tm(f.bef)))};
+const XC=["GRAD","GPSO","GMAN","PBC","LELT","LBAR","LWI","LEXP","LHIM","STAW","STAB"];
+const bad=c=>c.d.some(x=>XC.includes(x))||(!st.f.uman&&c.d.includes("UMAN"));
+function rcs(r){return r.k=="c"?CAT.filter(c=>c.c==r.v):CAT.filter(c=>r.v.split("&").every(x=>c.d.includes(x))&&!bad(c)&&!nl(r.v,c))}
+function okR(r,s){if(r.k=="d"&&!s.m.length)return false;const f=r.f;if(!f||!(f.days||f.from||f.to))return true;const lo=f.from?tm(f.from):0,hi=f.to?tm(f.to):1440,P=s.m.filter(m=>!m.ty||/^(Lec|Sem)/.test(m.ty));
+return P.length>0&&P.every(m=>(!f.days||f.days.includes(DAYS[m.d]))&&m.s>=lo&&m.s<=hi)}
+function pool(r){if(r.k=="x")return r.sec;return rcs(r).filter(c=>!(r.xc||[]).includes(c.c)).flatMap(c=>c.s.filter(s=>!(r.off||[]).includes(s.crn)&&okR(r,s)).map(s=>({c,s})))}
+const clash=(a,b)=>a.some(x=>b.some(y=>x.d==y.d&&x.s<y.e&&y.s<x.e));
+function gen(R=st.reqs,lim=20000,nmax=1500000){const pools=R.map(r=>pool(r).filter(p=>okSec(p.s)));
+const bad=pools.findIndex(p=>!p.length);if(bad>=0)return{err:`No usable sections for ${(r=>r.k=="c"?r.v:r.k=="p"?r.label:"Discovery: "+tl(r.v))(R[bad])}. Loosen your limits or allow more sections.`};
+const ord=pools.map((p,i)=>i).sort((a,b)=>pools[a].length-pools[b].length),out=[],base=st.breaks.flatMap(b=>b.d.map(d=>({d,s:b.s,e:b.e})));let n=0,capped=false;
+(function rec(k,ch,occ,used){if(out.length>=lim||n>nmax){capped=true;return}if(k==ord.length){out.push(ch.slice());return}
+for(const p of pools[ord[k]]){n++;if(used.has(p.c.c)||clash(p.s.m,occ))continue;used.add(p.c.c);ch.push(p);rec(k+1,ch,occ.concat(p.s.m),used);ch.pop();used.delete(p.c.c)}})(0,[],base,new Set());
+return{list:out,capped}}
+function stats(sc){const by=[[],[],[],[],[]];let cr=0;sc.forEach(p=>{cr+=p.c.cr;p.s.m.forEach(m=>by[m.d].push(m))});let gaps=0,days=0,f=1e4,l=0;
+by.forEach(a=>{if(!a.length)return;days++;a.sort((x,y)=>x.s-y.s);f=Math.min(f,a[0].s);let end=a[0].e;l=Math.max(l,...a.map(x=>x.e));for(const x of a.slice(1)){if(x.s>end)gaps+=x.s-end;end=Math.max(end,x.e)}});return{cr,gaps,days,f,l}}
+function cal(bl,h){let lo=480,hi=1080;bl.forEach(b=>{lo=Math.min(lo,Math.floor(b.s/60)*60);hi=Math.max(hi,Math.ceil(b.e/60)*60)});const sp=hi-lo;h=Math.max(380,sp/60*40);
+let tl="",hl="";for(let m=lo;m<=hi;m+=60){const t=(m-lo)/sp*100;tl+=`<span style="top:${t}%">${fm(m)}</span>`;hl+=`<div class="hl" style="top:${t}%"></div>`}
+let o=`<div class="cal"><div class="h"></div>${DN.map(d=>`<div class="h">${d}</div>`).join("")}<div class="tl" style="height:${h}px">${tl}</div>`;
+for(let d=0;d<5;d++)o+=`<div class="col" style="height:${h}px">${hl}${bl.filter(b=>b.d==d).map(b=>`<${b.u?`a href="${esc(b.u)}" target="_blank" rel="noopener"`:"div"} class="blk${b.ty&&!/^(Lec|Sem)/.test(b.ty)?" lab":""}" title="${esc(b.l)}${b.t?" – "+esc(b.t):""} ${fm(b.s)}–${fm(b.e)}${b.u?" (click to open on courses.unh.edu)":""}" style="top:${(b.s-lo)/sp*100}%;height:${(b.e-b.s)/sp*100}%;background:${b.bg};opacity:${b.o||1}"><b>${esc(b.l)}</b><span>${fm(b.s)}–${fm(b.e)}</span>${b.t?`<em>${esc(b.t)}</em>`:""}</${b.u?"a":"div"}>`).join("")}</div>`;return o+"</div>"}
+const brkBl=()=>st.breaks.flatMap(b=>b.d.map(d=>({d,s:b.s,e:b.e,l:b.n,bg:"#667085",o:.85})));
+const schBl=sc=>sc.flatMap(p=>p.s.m.map(m=>({...m,l:lbl(p.c.c,m),t:p.c.t,u:cu(p.s.crn),bg:col(p.c.c)}))).concat(brkBl());
+function key(sc){return sc.map(p=>p.s.crn).sort().join(",")}
+function card(sc,i,src,o){const s=stats(sc),sv=st.saved.includes(key(sc));
+return`<article class="card${i==0&&(src=="sch"||src=="job")?" top1":""}"><div class="ch"><b>${src=="sav"?"Saved "+(i+1):"Option "+(i+1)}${i==0&&(src=="sch"||src=="job")?`<span class="badge">${src=="job"?"Most work time":"Top pick"}</span>`:""}</b><span class="sum">${s.cr} credits</span></div>
+<div class="sum">${s.days} day${s.days==1?"":"s"} on campus · ${Math.round(s.gaps/6)/10}h between classes · ${fm(s.f)}–${fm(s.l)}${freeD(sc)}</div>${o?`<div class="sum"><b style="color:var(--ok)">${Math.round(o.tot/6)/10}h work time</b> · ${o.w.length} shift${o.w.length==1?"":"s"} · ${o.free} preferred day${o.free==1?"":"s"} off</div>`:""}${cal(schBl(sc).concat(o?o.w.map(w=>({d:w.d,s:w.s,e:w.e,l:"WORK "+Math.round((w.e-w.s)/6)/10+"h",bg:"#127a46",o:.92})):[]),240)}
+<ul class="cl">${sc.map(p=>`<li style="--c:${col(p.c.c)}"><i></i><div>${lk(p.s.crn,`<b>${esc(p.c.c)}</b> ${esc(p.c.t)}`)}<small>${esc(sumT(p.s))}</small><small>${esc(p.s.inst||"Staff")} · CRN ${esc(p.s.crn)} · ${p.s.seats<=5?`<span class="lo">only ${p.s.seats} seats left</span>`:p.s.seats+" seats left"}</small></div></li>`).join("")}</ul>
+<div class="cf"><button class="btn ${sv?"":"p"}" onclick="sv(${i},'${src}')">${sv?"Saved ✓":"Save"}</button><button class="btn" onclick="exp(${i},'${src}')">CRNs and calendar</button><button class="btn" onclick="ws(${i},'${src}')">Worksheet PDF</button></div></article>`}
+function sv(i,src){const sc=(src=="sav"?savedSc():RES)[i],k=key(sc),j=st.saved.indexOf(k);j<0?st.saved.push(k):st.saved.splice(j,1);rs();save()}
+function savedSc(){return st.saved.map(k=>k.split(",").map(crn=>{for(const c of CAT){const s=c.s.find(x=>x.crn==crn);if(s)return{c,s}}}).filter(Boolean))}
+function exp(i,src){const sc=(src=="sav"?savedSc():RES)[i];window.EX=sc;$("#dlg").innerHTML=`<h3>Export schedule</h3><p class="mu">Register with these CRNs:</p><textarea readonly style="min-height:50px">${sc.map(p=>p.s.crn.split("+").join(", ")).join(", ")}</textarea>
+<p class="mu">Calendar file (.ics) — copy into a file named <code>schedule.ics</code> and import to Google/Apple/Outlook. Semester dates are editable (approximate defaults):</p>
+<div class="row"><input type="date" id="d1" value="2027-01-19" onchange="ics()" style="width:auto"><input type="date" id="d2" value="2027-05-07" onchange="ics()" style="width:auto"></div><textarea id="ics" readonly></textarea>
+<div class="row"><button class="s p" onclick="cp()">Copy .ics</button><button class="s" onclick="$('#dlg').close()">Close</button></div>`;ics();$("#dlg").showModal()}
+function ics(){const a=new Date($("#d1").value+"T00:00"),u=$("#d2").value.replace(/-/g,"")+"T235959",z=n=>String(n).padStart(2,"0"),L=["MO","TU","WE","TH","FR"];let o=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//UNH Schedule Studio//EN"];
+window.EX.forEach(p=>p.s.m.forEach(m=>{const d=new Date(a);d.setDate(d.getDate()+((m.d+1-d.getDay()+7)%7));const ds=`${d.getFullYear()}${z(d.getMonth()+1)}${z(d.getDate())}`,t=x=>z(Math.floor(x/60))+z(x%60)+"00";
+o.push("BEGIN:VEVENT",`UID:${p.s.crn}-${m.d}-${m.s}@unh-schedule-studio`,`SUMMARY:${lbl(p.c.c,m)} ${p.c.t}`,`DESCRIPTION:CRN ${p.s.crn} · ${p.s.inst}`,`DTSTART:${ds}T${t(m.s)}`,`DTEND:${ds}T${t(m.e)}`,`RRULE:FREQ=WEEKLY;BYDAY=${L[m.d]};UNTIL=${u}`,"END:VEVENT")}));
+$("#ics").value=o.concat("END:VCALENDAR").join("\r\n")}
+async function cp(){const t=$("#ics");t.select();try{await navigator.clipboard.writeText(t.value)}catch(e){document.execCommand("copy")}}
+/* ---------- Registration worksheet: fills UNH's official PDF (worksheet.pdf) in the browser ---------- */
+const WS_FIELDS=[["name","Name (Last, First, MI)","Smith, Jane A"],["id","UNH ID#",""],["major","Major",""],["phone","Phone",""],["email","UNH email",""]];
+const wsC=m=>(Math.floor(m/60)%12||12)+":"+String(m%60).padStart(2,"0"),wsAP=m=>m<720?"AM":"PM";
+function wsT(s){const g=new Map();for(const m of s.m){const ty=m.ty&&!/^(Lec|Sem)/i.test(m.ty)?m.ty:"",k=ty+"|"+m.s+"|"+m.e;if(!g.has(k))g.set(k,{ty,s:m.s,e:m.e,d:[]});g.get(k).d.push(m.d)}
+return[...g.values()].map(x=>`${x.ty?x.ty+" ":""}${[...new Set(x.d)].sort().map(d=>DAYS[d]).join("")} ${wsC(x.s)}${wsAP(x.s)!=wsAP(x.e)?wsAP(x.s):""}-${wsC(x.e)}${wsAP(x.e)}`).join("; ")||"Online / arranged"}
+// A backup section of the same class that still fits around the rest of this schedule (most open seats wins).
+function wsAlt(sc,k){const rest=sc.filter((_,j)=>j!=k).flatMap(p=>p.s.m).concat(st.breaks.flatMap(b=>b.d.map(d=>({d,s:b.s,e:b.e}))));
+const s=sc[k].c.s.filter(s=>s.crn!=sc[k].s.crn&&s.seats>0&&okSec(s)&&!clash(s.m,rest)).sort((a,b)=>b.seats-a.seats)[0];return s?{c:sc[k].c,s}:null}
+function ws(i,src){const sc=(src=="sav"?savedSc():RES)[i];window.WS=sc;const S=st.student=st.student||{};
+$("#dlg").innerHTML=`<h3>Registration worksheet</h3><p class="mu">Fills in UNH’s official worksheet with this schedule. Your details stay in this browser. Signature lines are left blank for you and your advisor.</p>
+<div class="two">${WS_FIELDS.map(([k,l,ph])=>`<label>${l}<input id="ws_${k}" value="${esc(S[k]||"")}" placeholder="${ph}" autocomplete="off"></label>`).join("")}</div>
+<label class="chk"><input type="checkbox" id="ws_alt" ${S.alt===0?"":"checked"}> Fill “Alternate Choice” with backup sections</label>
+<p class="mu">${sc.length>7?`This schedule has ${sc.length} classes, so the PDF will have ${Math.ceil(sc.length/7)} pages. `:""}Backups are other sections of the same class that fit around the rest of this schedule. They aren’t guaranteed to work together, so check them before you hand it in.</p>
+<div class="row"><button class="s p" onclick="wsPdf()">Download PDF</button><button class="s" onclick="$('#dlg').close()">Close</button><span id="ws_err" class="mu" style="color:var(--bad)"></span></div>`;$("#dlg").showModal()}
+// Cell geometry measured from the official PDF (pt; y measured from the TOP of the page).
+const WS_X=[[36,99.7,163.3,226.9,290],[291.1,361.9,433.1,504.2,575.5]];
+const WS_ENTRY=[225.1,283.1,341.3,399.5,457.7,515.9,574.1],WS_DAYS=[243.6,301.6,359.8,418,476.2,534.4,592.6];
+async function wsBuild(tplBytes,S,rows){const{PDFDocument,StandardFonts,rgb}=PDFLib,tpl=await PDFDocument.load(tplBytes),out=await PDFDocument.create(),font=await out.embedFont(StandardFonts.Helvetica),ink=rgb(.04,.12,.5);
+for(let n=0;n<Math.max(1,Math.ceil(rows.length/7));n++){
+const[pg]=await out.copyPages(tpl,[0]);out.addPage(pg);const H=pg.getHeight();
+const put=(t,x,base,w,size=10)=>{t=String(t==null?"":t).replace(/[^\x20-\x7E\xA0-\xFF]/g,"?");if(!t)return;let z=size;while(z>5&&font.widthOfTextAtSize(t,z)>w)z-=.25;pg.drawText(t,{x,y:H-base,size:z,font,color:ink})};
+put(S.id,86,126.4,200);put(S.name,390,126.4,181);put(S.major,72,144.9,215);put(S.phone,330,144.9,241);put(S.email,93,163.5,478);
+rows.slice(n*7,n*7+7).forEach((r,k)=>[r.a,r.b].forEach((p,side)=>{if(!p)return;const[sub,num]=[p.c.c.split(" ")[0],p.c.c.split(" ").slice(1).join(" ")],X=WS_X[side],e=WS_ENTRY[k]+13,cell=j=>[X[j]+4,X[j+1]-X[j]-8];
+[sub,num,p.s.sec.split("/").join(" / "),p.s.crn.split("+").join(" / ")].forEach((t,j)=>put(t,cell(j)[0],e,cell(j)[1],10));
+const dx=side?348:94;put(wsT(p.s),dx,WS_DAYS[k]+12.8,(side?571:286)-dx,9)}))}
+return out.save()}
+async function wsPdf(){const S=st.student=st.student||{};WS_FIELDS.forEach(([k])=>S[k]=$("#ws_"+k).value.trim());S.alt=$("#ws_alt").checked?1:0;save();
+try{const r=await fetch("worksheet.pdf");if(!r.ok)throw new Error("worksheet.pdf is missing. Put it next to index.html.");
+const sc=window.WS,bytes=await wsBuild(await r.arrayBuffer(),S,sc.map((a,k)=>({a,b:S.alt?wsAlt(sc,k):null}))),
+a=document.createElement("a");a.href=URL.createObjectURL(new Blob([bytes],{type:"application/pdf"}));a.download="registration-worksheet.pdf";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4e3)}
+catch(e){$("#ws_err").textContent=e.message||"Couldn’t build the PDF."}}
+let TO;
+function toast(m,fn){const t=$("#toast");t.innerHTML=esc(m)+(fn?' <button onclick="UNDO()">Undo</button>':"");window.UNDO=()=>{fn();t.classList.remove("on")};t.classList.add("on");clearTimeout(TO);TO=setTimeout(()=>t.classList.remove("on"),6000)}
+function clr(){const a=st.reqs;st.reqs=[];go();toast("Cleared all classes",()=>{st.reqs=a;go()})}
+const freeD=sc=>{const u=new Set(sc.flatMap(p=>p.s.m.map(m=>m.d))),f=DN.filter((_,i)=>!u.has(i));return f.length?` · <span class="badge" style="margin:0">Free ${f.join(" ")}</span>`:""};
+// Explains "no schedule works": which classes can never fit together, or never fit around blocked times.
+function why(){const P=st.reqs.map(r=>pool(r).filter(p=>okSec(p.s))),nm=r=>r.k=="c"?r.v:"Discovery: "+tl(r.v),base=st.breaks.flatMap(b=>b.d.map(d=>({d,s:b.s,e:b.e}))),o=[];
+P.forEach((a,i)=>{if(a.length&&base.length&&a.every(p=>clash(p.s.m,base)))o.push(nm(st.reqs[i])+" only has sections that overlap your blocked times.");
+for(let j=i+1;j<P.length;j++)if(a.length&&P[j].length&&!a.some(x=>P[j].some(y=>x.c.c!=y.c.c&&!clash(x.s.m,y.s.m))))o.push(nm(st.reqs[i])+" and "+nm(st.reqs[j])+" always overlap.")});return o.slice(0,4)}
+document.addEventListener("keydown",e=>{if(e.key=="/"&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();$("#q").focus()}});
+/* ---------- Quick filters ---------- */
+const dOff=a=>a.every(d=>(st.f.free||[]).includes(d));
+const dTog=a=>{const f=st.f.free=st.f.free||[];if(dOff(a))st.f.free=f.filter(d=>!a.includes(d));else a.forEach(d=>f.includes(d)||f.push(d))};
+const Q=[["no8","No 8 AMs",()=>!!st.f.no8,()=>st.f.no8=st.f.no8?0:1],["fri","No Fridays",()=>dOff([4]),()=>dTog([4])],["tt","No Tue/Thu",()=>dOff([1,3]),()=>dTog([1,3])],["mwf","No Mon/Wed/Fri",()=>dOff([0,2,4]),()=>dTog([0,2,4])],
+["eve","Done by 5 PM",()=>st.f.bef=="17:00",()=>st.f.bef=st.f.bef=="17:00"?"":"17:00"],
+["lun","Lunch 12–1",()=>st.breaks.some(b=>b.n=="Lunch"),()=>{const j=st.breaks.findIndex(b=>b.n=="Lunch");j<0?st.breaks.push({n:"Lunch",d:[0,1,2,3,4],s:720,e:780}):st.breaks.splice(j,1)}]];
+function qol(){$("#qol").innerHTML=Q.map(([k,l,on])=>`<button class="tag ${on()?"on":""}" onclick="qt('${k}')">${l}</button>`).join("")+`<button class="tag" onclick="qr()">Reset</button>`}
+function qt(k){Q.find(q=>q[0]==k)[3]();go()}
+function qr(){st.f={...st.f,no8:0,noFri:0,free:[],aft:"",bef:""};st.breaks=st.breaks.filter(b=>b.n!="Lunch");go()}
+/* ---------- Job optimizer: maximize usable work time around classes ---------- */
+const JD={s:480,e:1200,min:3,buf:30,off:[1,3]},jb=()=>({...JD,...(st.job||{})});
+function jset(k,v){st.job={...jb(),[k]:v};go()}
+function joff(i){const J=jb();st.job={...J,off:J.off.includes(i)?J.off.filter(x=>x!=i):[...J.off,i]};go()}
+// Free stretches (>= min hours) inside the work window, after padding each class with the travel buffer.
+function shifts(sc,J){const by=[[],[],[],[],[]];sc.forEach(p=>p.s.m.forEach(m=>by[m.d].push({s:m.s-J.buf,e:m.e+J.buf})));st.breaks.forEach(b=>b.d.forEach(d=>by[d].push({s:b.s,e:b.e})));
+const out=[];by.forEach((a,d)=>{a.sort((x,y)=>x.s-y.s);let t=J.s;const push=(s,e)=>{if(e-s>=J.min*60)out.push({d,s,e})};
+for(const x of a){if(x.e<=J.s)continue;if(x.s>=J.e)break;if(x.s>t)push(t,Math.min(x.s,J.e));t=Math.max(t,x.e)}if(t<J.e)push(t,J.e)});return out}
+function jobUI(){const J=jb(),hs=v=>Array.from({length:17},(_,i)=>(i+6)*60).map(m=>`<option value="${m}" ${m==v?"selected":""}>${tlab(m)}</option>`).join(""),ns=(a,v,u)=>a.map(n=>`<option value="${n}" ${n==v?"selected":""}>${n} ${u}</option>`).join("");
+return`<div class="step"><h2>Job optimizer</h2><p class="mu" style="margin:-6px 0 12px">Finds the schedule that leaves you the most usable work time. Green blocks show when you could work.</p><div class="two">
+<label>Work window starts<select onchange="jset('s',+this.value)">${hs(J.s)}</select></label><label>Work window ends<select onchange="jset('e',+this.value)">${hs(J.e)}</select></label>
+<label>Shortest shift worth taking<select onchange="jset('min',+this.value)">${ns([1,2,3,4,5],J.min,"hr")}</select></label><label>Travel buffer around class<select onchange="jset('buf',+this.value)">${ns([0,15,30,45,60],J.buf,"min")}</select></label></div>
+<p class="lab">Days I’d love completely off</p><div class="tags">${DN.map((d,i)=>`<button class="tag ${J.off.includes(i)?"on":""}" onclick="joff(${i})">${d}</button>`).join("")}</div></div>`}
+function jobRes(){if(!st.reqs.length)return empty("Add your classes first","Pick the classes you need in step 1, then this tab finds the schedule that leaves the most time to work.");
+const g=gen();if(g.err)return empty("Can’t build a schedule yet",g.err,1);const J=jb();
+const L=g.list.map(x=>{const w=shifts(x,J),tot=w.reduce((a,s)=>a+s.e-s.s,0),free=J.off.filter(d=>!x.some(p=>p.s.m.some(m=>m.d==d))).length;return{x,w,tot,free,sc:tot+free*240}}).sort((a,b)=>b.sc-a.sc);RES=L.map(o=>o.x);
+if(!L.length)return empty("No schedule works","Some of your classes always overlap. Try the Schedules tab for what’s clashing.",1);
+return`<h2 class="cnt">Best for work: ${Math.round(L[0].tot/6)/10} hours a week</h2><p class="sub">Ranked by usable work time (free stretches of ${J.min}+ hours, Mon–Fri), with a bonus for the days off you picked. Showing ${Math.min(L.length,showN)} of ${L.length}${g.capped?"+":""}.</p><div class="grid">${L.slice(0,showN).map((o,i)=>card(o.x,i,"job",o)).join("")}</div>${L.length>showN?`<p><button class="btn" onclick="showN+=12;rs()">Show more</button></p>`:""}`}
+// Link to the official class page, e.g. https://courses.unh.edu/class/202650/50561 (uses the lecture CRN of combined sections).
+const cu=crn=>st.term&&crn?`https://courses.unh.edu/class/${encodeURIComponent(st.term)}/${encodeURIComponent(String(crn).split("+")[0])}`:"";
+const lk=(crn,x)=>cu(crn)?`<a class="ext" href="${cu(crn)}" target="_blank" rel="noopener">${x} ↗</a>`:x;
+// "No labs": skip Discovery courses that carry a Discovery Lab (DLAB) attribute, unless the topic itself asks for a lab.
+const nl=(v,c)=>st.f.nolab&&!v.includes("DLAB")&&c.d.includes("DLAB");
+const nlBtn=()=>`<button class="tag ${st.f.nolab?"on":""}" title="Hide Discovery classes that come with a lab" onclick="st.f.nolab=st.f.nolab?0:1;go()">${st.f.nolab?"✓ ":""}No labs</button>`;
+function renderReqs(){const ST=starts();$("#reqs").innerHTML=st.reqs.map((r,i)=>{
+if(r.k=="c"){const c=CAT.find(x=>x.c==r.v),n=c?c.s.length:0,on=n-(r.off||[]).length;
+return`<div class="req" style="--c:${col(r.v)}"><div class="rh"><div><b>${esc(r.v)}</b> ${esc(c?c.t:"Not offered this term")}${n==1?`<small>${esc(sumT(c.s[0]))}</small>`:""}</div><button class="x" title="Remove" onclick="rmReq(${i})">×</button></div>
+${n>1?`<details><summary>${on==n?`Any of ${n} sections`:`${on} of ${n} sections allowed`}</summary><div class="tags scroll">${c.s.map(s=>`<button class="chip ${(r.off||[]).includes(s.crn)?"off":""}" title="Tap to allow or skip" onclick="togSec(${i},'${s.crn}')">§${esc(s.sec)} ${esc(s.inst)} · ${esc(sumT(s))}</button>`).join("")}</div></details>`:""}</div>`}
+const f=r.f||{},D=f.days||"",fit=pool(r).filter(p=>okSec(p.s)).length,pick=D||f.from?[D?[...D].map(x=>DN[DAYS.indexOf(x)]).join(" "):"",f.from?tlab(tm(f.from))+(f.to&&f.to!=f.from?" to "+tlab(tm(f.to)):""):""].filter(Boolean).join(", "):"Any day, any time";
+return`<div class="req" style="--c:var(--ac)"><div class="rh"><div><b>Discovery:</b> ${esc(tl(r.v))}<small>${fit} section${fit==1?"":"s"} fit. We’ll pick the most back-to-back.</small></div><button class="x" title="Remove" onclick="rmReq(${i})">×</button></div>
+<details><summary>${esc(pick)}</summary><div class="tags">${[...DAYS].map((d,j)=>`<button class="tag ${D.includes(d)?"on":""}" onclick="rDay(${i},'${d}')">${DN[j]}</button>`).join("")}</div>
+<div class="two"><label>Starts at or after<select onchange="rT(${i},'from',this.value)">${opts(ST,f.from,"Any time")}</select></label><label>and at or before<select onchange="rT(${i},'to',this.value)">${opts(ST,f.to,"Any time")}</select></label></div>
+<p class="lab">Classes in this topic (tap to skip)</p><div class="tags scroll">${rcs(r).map(x=>`<button class="chip ${(r.xc||[]).includes(x.c)?"off":""}" title="${esc(x.t)}" onclick="togC(${i},'${x.c}')">${esc(x.c)} ${esc(x.t)}</button>`).join("")}</div></details></div>`}).join("")||'<p class="hint">Nothing added yet. Your classes will be listed here.</p>'}
+function renderBrks(){$("#brks").innerHTML=st.breaks.map((b,i)=>`<div class="brk"><span><b>${esc(b.n)}</b> · ${b.d.map(d=>DN[d]).join(" ")} · ${fm(b.s)}–${fm(b.e)}</span><button class="x" title="Remove" onclick="rmBrk(${i})">×</button></div>`).join("")}
+const empty=(h,p,e)=>`<div class="empty ${e?"err":""}"><h2>${h}</h2><p>${esc(p)}</p></div>`;
+function rs(){const R=$("#res"),k=st.sort;
+$("#bar").innerHTML=(view=="sch"&&st.reqs.length?`<div class="seg">${Object.entries(SORTS).map(([a,b])=>`<button class="${k==a?"on":""}" onclick="st.sort='${a}';go()">${b}</button>`).join("")}</div>`:"<span></span>")+`<div class="seg"><button class="${view=="sch"?"on":""}" onclick="view='sch';rs()">Schedules</button><button class="${view=="job"?"on":""}" onclick="view='job';rs()">Job optimizer</button><button class="${view=="sav"?"on":""}" onclick="view='sav';rs()">Saved (${st.saved.length})</button></div>`;
+if(view=="job"){R.innerHTML=jobUI()+jobRes();return}
+if(view=="sav"){const l=savedSc();R.innerHTML=l.length?`<div class="grid">${l.map((s,i)=>card(s,i,"sav")).join("")}</div>`:empty("No saved schedules yet","Press Save on a schedule you like and it will wait for you here.");return}
+if(!st.reqs.length){const ex=CAT.filter(c=>!bad(c)&&c.s.length>2&&/ [1-4]\d\d$/.test(c.c)).sort((a,b)=>b.s.length-a.s.length).slice(0,6).map(c=>`<button class="tag" onclick="addC('${c.c}')">+ ${esc(c.c)}</button>`).join("");
+R.innerHTML=empty("Your schedules will show up here","Start with step 1: search for a class, or pick a Discovery topic.").replace(/<\/div>$/,ex?`<p class="lab">Or try adding a few classes</p><div class="ex">${ex}</div></div>`:"</div>");RES=[];return}
+const g=gen();if(g.err){R.innerHTML=empty("Can’t build a schedule yet",g.err,1);RES=[];return}
+const sc=g.list.map(x=>({x,s:stats(x)}));
+sc.sort((a,b)=>k=="days"?a.s.days-b.s.days||a.s.gaps-b.s.gaps:k=="gaps"?a.s.gaps-b.s.gaps:k=="late"?b.s.f-a.s.f:a.s.l-b.s.l);RES=sc.map(o=>o.x);
+if(!RES.length){const w=why();R.innerHTML=empty("No schedule works","Some of your classes always overlap. Try keeping fewer days free, widening your time limits, or allowing more sections.",1).replace(/<\/div>$/,w.length?`<ul class="why">${w.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:"</div>");return}
+R.innerHTML=`<h2 class="cnt">${RES.length}${g.capped?"+":""} schedule${RES.length==1?"":"s"} that work</h2><p class="sub">Sorted by ${SORTS[k].toLowerCase()}. Save the ones you like.</p><div class="grid">${RES.slice(0,showN).map((s,i)=>card(s,i,"sch")).join("")}</div>${RES.length>showN?`<p><button class="btn" onclick="showN+=12;rs()">Show more</button></p>`:""}`}
+function go(){showN=12;save();fillDisc();fillPrefs();qol();renderReqs();renderSum();renderBrks();found();rs()}
+load();st.reqs=st.reqs.filter(r=>r.k=="c"||r.k=="d");
+$("#bd").innerHTML=DN.map((d,i)=>`<label class="chk"><input type="checkbox" value="${i}"> ${d}</label>`).join("");$("#uman").checked=!!st.f.uman;$("#uopen").checked=!!st.f.open;
+go();loadRemote();
+function fillDisc(){const ok=t=>(!st.f.nolab||!t.includes("DLAB"))&&CAT.some(c=>!bad(c)&&!nl(t,c)&&t.split("&").every(x=>c.d.includes(x)));$("#disc").innerHTML=nlBtn()+TOP.filter(ok).map(k=>{const on=st.reqs.some(r=>r.k=="d"&&r.v==k);return`<button class="tag ${on?"on":""}" title="${esc(k.split("&").map(x=>TAG[x]||x).join(" + "))}" onclick="togDisc('${k}')">${on?"✓":"+"} ${esc(tl(k))}</button>`}).join("")}
+async function setTerm(t){try{const r=await fetch("/api/courses?term="+encodeURIComponent(t));if(!r.ok)throw 0;const j=await r.json();CAT=norm(j.courses);ATTR=j.attrs||{};st.term=t;st.reqs=st.reqs.filter(q=>q.k!="c"||CAT.some(c=>c.c==q.v));$("#pill").textContent="Updated "+new Date(j.updated).toLocaleDateString();fillDisc();go()}catch(e){}}
+async function loadRemote(){try{const r=await fetch("/api/terms");if(!r.ok)return;const t=await r.json();if(!t.length)return;const s=$("#term");s.innerHTML=t.map(x=>`<option value="${esc(x.code)}">${esc(x.name)}</option>`).join("");s.style.display="";s.value=t.some(x=>x.code==st.term)?st.term:t[0].code;await setTerm(s.value)}catch(e){}}
+</script></body></html>
